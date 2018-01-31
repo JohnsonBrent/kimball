@@ -3,33 +3,25 @@
 kimball
 =======
 
-The kimball package makes available several functions to access Kimball's (1947) truncated normal distribution. As stated in Kimball's (1947) original paper and by Oates and Spencer (1962) the distribution's parameters are entirely intuitive. In its original specification, the user only need input a mean (e.g., the average service life of some durable) and a maximum (e.g., the maximum expected service life of some durable) to estimate the probability of failure (probability density) or the life table or likelihood of survival (1 minus the cumulative distribution function).
+The kimball package makes available several functions to access [Kimball's (1947)](Kimball%20(1947)%20-%20A%20System%20of%20Life%20Tables%20for%20Physical%20Property%20Based%20on%20the%20Truncated%20Normal%20Distribution.pdf) truncated normal distribution. As stated in Kimball's (1947) original paper and by [Oates and Spencer (1962)](Oates%20&%20Spencer%20(1962)%20-%20A%20System%20of%20Retirement%20Frequencies%20for%20Depreciable%20Assets.pdf) Kimball's contribution is a distribution with parameters that are completely intuitive. In its original specification, the user only need input a mean (e.g., the average service life of some durable) and a maximum (e.g., the maximum expected service life of some durable) to estimate the probability of failure (probability density) or the life table or likelihood of survival (1 minus the cumulative distribution function).
 
-As opposed to most other implementations of a truncated normal distribution (e.g., the [truncnorm package](https://cran.r-project.org/web/packages/truncnorm/index.html)) the kimball distribution's parameters are entirely intuitive. Rather than specification by a mean and standard deviation (or variance) the kimball distribution is specified by a mean and maximum. The variance is implied and is expressed as a function of the mean and maximum. (See Oats and Spencer's (1962) equation's 7.)
+As opposed to most other implementations of a truncated normal distribution (e.g., the [truncnorm package](https://cran.r-project.org/web/packages/truncnorm/index.html)) the kimball distribution's parameters have a behavioral interpretation. Rather than described by a mean and standard deviation (or variance), the kimball distribution is specified by its mean and maximum value. The variance need not be specified by the user but is implied by and can be expressed as a function of the mean and maximum. (See Oats and Spencer's (1962) Equation 7.)
 
-My implementation is largely as originally described by Kimball (1947). My one addition is to generalize Kimball's (1947) equations to incorporate an arbitrary minimum. That is, Kimball (1947) originally positioned his work as a system of [life tables](https://en.wikipedia.org/wiki/Life_table) with the assumption that the domain of interest always begins at zero. I generalize this and allow the user to specify an arbitrary minimum as a function parameter.
+My implementation is largely as originally described by Kimball (1947). My one addition is to generalize Kimball's (1947) equations to incorporate an arbitrary minimum. That is, Kimball (1947) originally positioned his work as a system of [life tables](https://en.wikipedia.org/wiki/Life_table) with the assumption that the domain of interest always begin at zero on the left-hand side, i.e., it's left-censored at zero. I generalize this and allow the user to specify any arbitrary (but strictly positive) minimum as a function parameter.
 
-Like the un-truncated normal or Gaussian distribution, the kimball distribution maintains the property wherein its mean, median, and mode are identical (Under most conditions).
+The kimball package makes available several functions to access [Kimball's (1947)](Kimball%20(1947)%20-%20A%20System%20of%20Life%20Tables%20for%20Physical%20Property%20Based%20on%20the%20Truncated%20Normal%20Distribution.pdf) truncated normal distribution. As stated in Kimball's (1947) original paper and by Oates and Spencer (1962) Kimball's contribution is a distribution with parameters that are completely intuitive. In its original specification, the user only need input a mean (e.g., the average service life of some durable) and a maximum (e.g., the maximum expected service life of some durable) to estimate the probability of failure (probability density) or the life table or likelihood of survival (1 minus the cumulative distribution function).
+
+As opposed to most other implementations of a truncated normal distribution (e.g., the [truncnorm package](https://cran.r-project.org/web/packages/truncnorm/index.html)) the kimball distribution's parameters have a behavioral interpretation. Rather than described by a mean and standard deviation (or variance), the kimball distribution is specified by its mean and maximum value. The variance need not be specified by the user but is implied by and can be expressed as a function of the mean and maximum. (See Oats and Spencer's (1962) Equation 7.)
+
+My implementation is largely as originally described by Kimball (1947). My one addition is to generalize Kimball's (1947) equations to incorporate an arbitrary minimum. That is, Kimball (1947) originally positioned his work as a system of [life tables](https://en.wikipedia.org/wiki/Life_table) with the assumption that the domain of interest on the left-hand side always begins at zero on. I generalize this and allow the user to specify any arbitrary (but strictly positive) minimum as a function parameter.
+
+Like the un-truncated normal or Gaussian distribution, the kimball distribution maintains the property wherein its mean, median, and mode are identical (Under most conditions). But unlike the complete normal or Gaussian distribution, the Kimball distribution is undefined for x &lt; 0.
 
 Following the naming convention in most other probability functions in R, the main functions available in the kimball package include the following:
 
 -   dkimball() returns the probability density.
 -   pkimball() returns the cumulative distribution.
 -   qkimball() returns the quantile (estimated by approximation and a user-specified level of precision).
-
-The kimball package makes available several functions to access Kimball's (1947) truncated normal distribution. As stated in Kimball's (1947) original paper and by Oates and Spencer (1962) the distribution's parameters are entirely intuitive. In its original specification, the user only need input a mean (e.g., the average service life of some durable) and a maximum (e.g., the maximum expected service life of some durable) to specify the probability of failure and need for replacement (probability density) or the life table (e.g., 1 minus the cumulative distribution function).
-
-As opposed to most other implementations of a truncated normal distribution (e.g., the [truncnorm package](https://cran.r-project.org/web/packages/truncnorm/index.html) the kimball distribution's parameters are entirely intuitive. Rather than be specified by a mean and standard deviation (or variance) the kimball distribution is specified by a mean and maximum and the variance is derived.
-
-My implementation is largely as originally described by Kimball (1947). My one addition is to generalize Kimball's (1947) original equations to incorporate an arbitrary minimum. That is, Kimball (1947) originally positioned his work as a system of [life tables](https://en.wikipedia.org/wiki/Life_table) with the assumption that the domain of interest always begins at zero. I generalize this and allow the user to specify an arbitrary minimum in a parameters.
-
-Like the un-truncated normal distribution, the kimball distribution maintains the property wherein its mean, median, and mode are identical (Under most conditions).
-
-Following the naming convention in most other probability functions in R, the main functions available in kimball include the following:
-
--   dkimball() returns the probability density.
--   pkimball() returns the cumulative distribution.
--   qkimball() returns the quantile (estimated by approximation and a user-specified level of precision)
 
 In this version of the package, I have not implemented a function for returning random deviates, e.g., rkimball().
 
@@ -61,4 +53,4 @@ dkimball(time,8,3)
 #> [1] 0.02734840 0.10334433 0.22688392 0.28938969 0.21444933 0.09232698
 ```
 
-See the vignette for more examples.
+See the [Kimball vignette](/vignettes/kimball.Rmd) for more examples.
