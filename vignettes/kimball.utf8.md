@@ -1,7 +1,7 @@
 ---
 title: "A Better Truncated Normal Probability Distribution for Data Science?"
 author: "Brent Johnson"
-date: "`r Sys.Date()`"
+date: "2018-02-05"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -9,17 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-library(kimball)
-library(tidyverse)
-library(ggplot2)
-library(gridExtra)
-library(grid)
-```
+
 
 I've created an R package called "kimball" to impliment a trunctated normal distribution that I've found very helpful in my statistics appliations. I'm going to describe it here with a couple of examples that demonstrate its usefullness. In short, the kimball distribution perfect for reflecting judgemental input about a random variable that one believes is positive and has a lower bound (i.e., is left-truncated).  But you can work with the distribution and see.  Is it an improvement over others? Did it help you answer a key data science question?  If so, please respond back and tell me your story.
 
@@ -32,61 +22,38 @@ Enter the kimball distribution. First articulated in 1947 by Bradford Kimball (n
 ## Some concrete examples
 
 Enough talk. Here below are several examples of the kimball distribution's probability density. Note I use the `dkimball()` function inside the kimball R package to complete these. 
-```{r kimball.density.examples}
+
+```r
 library(dplyr)
 library(kimball)
 x <- seq(from=1, to=12, by=.25)
 density1 <- dkimball(x, 6, 2)
 density2 <- dkimball(x, 12, 2)
+#> Warning in hmin(S, L): The max is significantly HIGHER than the mean.
+#> Results might not be correct. Please consider another distribution.
 density3 <- dkimball(x, 12, 6)
 combined1 <- data.frame(x, density1, density2, density3)
 ```
 
 
-```{r kimball.density.plots, fig.align='center', echo=FALSE}
-p<-ggplot(combined1, aes(x=x)) +
-  geom_line(aes(y = density1, colour = "dkimball(x, 6, 2)"), size=1.5) +
-  geom_line(aes(y = density2, colour = "dkimball(x, 12, 2)"), size=1.5) +
-  geom_line(aes(y = density3, colour = "dkimball(x, 12, 6)"), size=1.5) +
-  scale_colour_manual("", 
-                      breaks = c("dkimball(x, 6, 2)", "dkimball(x, 12, 2)", "dkimball(x, 12, 6)"),
-                      values = c('#bdc9e1','#74a9cf','#0570b0')) +
-  labs(title="Probability densities for \n various Kimball parameters") +
-  labs(fill="") +
-  ylab("Probability") +
-   theme_bw() +
-  theme(legend.position = c(0.75, 0.5), axis.text.y=element_blank())
-```
+
 
 And here are the corresponding cumulative distributions. For these above example densities. I use the `pkimball()` funtion for these.
-```{r kimball.cumulative.examples}
+
+```r
 cumulative1 <- pkimball(x, 6, 2)
 cumulative2 <- pkimball(x, 12, 2)
+#> Warning in hmin(S, L): The max is significantly HIGHER than the mean.
+#> Results might not be correct. Please consider another distribution.
 cumulative3 <- pkimball(x, 12, 6)
 combined2 <- data.frame(x, cumulative1, cumulative2, cumulative3)
 ```
 
 (Note: I need to fix the limits on pkimball and dkimball)
 
-```{r kimball.cumulative.plots, echo=FALSE}
-library(ggplot2)
-q <-ggplot(combined2, aes(x=x)) +
-  geom_line(aes(y = cumulative1, colour = "pkimball(x, 6, 2)"), size=1.5) +
-  geom_line(aes(y = cumulative2, colour = "pkimball(x, 12, 2)"), size=1.5) +
-  geom_line(aes(y = cumulative3, colour = "pkimball(x, 12, 6)"), size=1.5) +
-  scale_colour_manual("", 
-                      breaks = c("pkimball(x, 6, 2)", "pkimball(x, 12, 2)", "pkimball(x, 12, 6)"),
-                      values = c('#bdc9e1','#74a9cf','#0570b0')) +
-  labs(title="Cumulative probabilties for \n various Kimball parameters") +
-  labs(fill="") +
-  ylab("Probability") +
-  theme_bw() +
-  theme(legend.position = c(0.75, 0.45), axis.text.y=element_blank())
-```
 
-```{r arrange.kimball, fig.width=7, fig.height=4, echo=FALSE}
-grid.arrange(p, q, ncol = 2)
-```
+
+![](kimball_files/figure-html/arrange.kimball-1.png)<!-- -->
 
 Kimball (1947) as well as Oates and Spencer (1962) first developed the distribution to estimate life tables. For example, the kimball density could be descriptive of a probability of a machine part's failure as function of its age. Or it could describe the distribution of human lifespans. In this later appllication (life tables and mortality rates) the Kimball competes with the much more commonly used [Gompertz distribution](https://en.wikipedia.org/wiki/Gompertz_distribution). But again, the Gompertz distribution's two parameters, eta and b, are quite opaque.  They're inputs to a complex formula for deriving the Gompertz' mean and variance (or standard deviation) and they don't have an easy interpretation..  
 
@@ -101,7 +68,8 @@ The benefit of a distribution with interpretable parameters is that it lends its
 
 It's easy to fit a corresponding truncated normal probability density to these data above using the `dkimball` function:
 
-```{r kimball.density.cellphone}
+
+```r
 time <- c(0, .5, 1, 1.5, 2, 3, 4, 5, 6)
 kimball.dens <- dkimball(time,6,2) 
 # group last 3 periods to match the given chart
@@ -120,7 +88,8 @@ Note that I'm not using a least squares or maxkum likelhood algorithm to fit the
 
 One can comprae the Kimball density to the density from the truncnorm package--another implimentation of the truncated normal distribution. Optimizing `dtruncnorm()` to achieve the same fit as `dkimball()` yields a mean and standard deviation for dtruncnorm of 1.9 and 1.1, respectively. As seen in the image below, the two distributions mimic each other exactly. (Their lines are indistinguisable). But, again, one can estimate the Kimball version of the truncated normal distribution judgementally. For the Truncnorm version it would take maximum likelihood estimation or the generaized method of moments to esting the correct, fitted standard deviation.
 
-```{r truncnorm.density.cellphone, fig.width = 6, fig.align = "center"}
+
+```r
 library(truncnorm)
 truncnorm.dens <- dtruncnorm(time,a=0,b=6, 1.9, 1.1) 
 # group last 3 periods to match the given chart
@@ -130,26 +99,27 @@ truncnorm.dens <- truncnorm.dens / sum(truncnorm.dens)
 ```
 
 <center>
-```{r truncnorm.kimball.comparison, echo=FALSE, fig.width = 5, fig.align = "center"}
-plot(kimball.dens,type="l",col="red", 
-     main="Comparison of Kimball and Truncnorm densities",
-     xlab="Age of phone",
-     ylab="Probability of replacement",)
-legend(1, y=.24, legend=c("Kimball density", "Truncnorm density"), col=c("#bae4bc", "#2b8cbe"), lty=1, cex=0.8)
-lines(truncnorm.dens,col="blue")
-```
+<img src="kimball_files/figure-html/truncnorm.kimball.comparison-1.png" style="display: block; margin: auto;" />
 </center>
 
 To extend the mobile phone example above, I sometimes use the kimball distribution to estimate replaement sales of consumer or business durables. If one knows, say, the number of mobile phones sold in a given year, the kimball distribution (applied retrospectively) enables an estimate of the replacement sales volume. And one can also apply the Kimball distribution prospectively to easily forecast likely replacement sales in the future. For example, here below is publically [available data](https://www.statista.com/statistics/271539/worldwide-shipments-of-leading-smartphone-vendors-since-2007/) showing historic mobile phone sales.^[I'm going to assume in this example that shipments equal sales. In truth, there's a small amount of inventory in the channel and shipments in a given time period is slightly higher than actual sales in that time period.]  
 
-```{r smartphone.data, echo=FALSE}
-smartphone <- data.frame(year=c(2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
-2016, 2017), shipments=c(122.36, 151.4, 173.5, 304.7, 494.6, 725.3, 1019.5, 1301.7, 1437.2, 1470.6, 1468.1))
-```
 
-```{r print.shipments, echo=FALSE}
-knitr::kable(smartphone)
-```
+
+
+ year   shipments
+-----  ----------
+ 2007      122.36
+ 2008      151.40
+ 2009      173.50
+ 2010      304.70
+ 2011      494.60
+ 2012      725.30
+ 2013     1019.50
+ 2014     1301.70
+ 2015     1437.20
+ 2016     1470.60
+ 2017     1468.10
 
 And here's how one might work with these data and apply the kimball distribution `dkimball()`.  The above table shows *total* smartphone sales history.  I start by defining a function that takes this historic data and creates lagged values of the sales history. I put these lagged values in separate variables/columns (called shipments1, shipments2, etc.). And I save these lagged mobile phone shipment values into a data frame called `lagged.shipments`. 
 
@@ -159,7 +129,8 @@ I next compute replacemnet probabilities for six time periods (starting with 0, 
 
 The `mapply` function multiplies my 6-column matrix of lagged sales history (`lagged.shipments`) to the 6 element vector of replacement probabilities (`replacement.schedule`).  
 
-```{r replacement.estimate}
+
+```r
 # create a function to lag variable x a total of n times and name it with a prefix--keeping 
 # the original variable. This function creates n lags. Hence, it returns n+1 columns (including original).
 f <- function(x, n, pad, prefix="lag") {
@@ -183,12 +154,20 @@ smartphone$replacements <- rowSums(mapply(`*`, lagged.shipments, replacement.sch
 
 The result is an estimate of replacement mobile phone sales. Note that I show replacement sales as a percentage of total sales and that this rate is growing over time.  This suggests that fewer and fewer mobile mobile phone sales are going to first-time buyers. The market is composed of an increasing number of customers on their second, third, or fourth, etc. mobile phone. 
 
-```{r print.replacements, echo=FALSE}
-smartphone$replacement.share <- smartphone$replacements / smartphone$shipments
-smartphone$replacements <- paste(round(smartphone$replacements,digits=2))
-smartphone$replacement.share <- paste(round(smartphone$replacement.share*100,digits=1),"%",sep="")
-knitr::kable(smartphone, align=c(rep('c', 3)))
-```
+
+ year    shipments    replacements    replacement.share 
+------  -----------  --------------  -------------------
+ 2007     122.36         33.25              27.2%       
+ 2008     151.40         87.27              57.6%       
+ 2009     173.50         132.23             76.2%       
+ 2010     304.70         190.31             62.5%       
+ 2011     494.60         299.07             60.5%       
+ 2012     725.30         464.98             64.1%       
+ 2013     1019.50        683.52              67%        
+ 2014     1301.70        936.41             71.9%       
+ 2015     1437.20        1162.4             80.9%       
+ 2016     1470.60       1306.76             88.9%       
+ 2017     1468.10       1369.03             93.3%       
 
 In practice, I might now *forecast* the first-time sales, or sales of mobile phones to first-time users and then apply the kimball distribution recursively to forecast both first-time and subsequent replacement mobile phone sales. One woudl then have a logical forecast of total mobile phone sales--resting on the parameters of the kimball distribution as a key factor.
 
@@ -220,62 +199,38 @@ In other words, when specififying a Kimball distribution or density, there yet r
 The original Kimball distrribution also assumes a minimum population value of zero (x >= 0) and a lower bound other than zero is not permitted. This assumption goes back to Kimball's (1947) specification and application to life tables--in which a zero lower bound is a reasonable assumptin. After all, no species ever lives a *negative* number of months or years.  And in my implimentation, zero is the default minimum when specifing `dkimball()` or `pkimball()`.  But I allow an option to over-ride this zero minimum assumption.  Within the function's options, one can specify a more flexibility minimum if desired.  In these next examples, I show the Kimball probability density and cumulative distributionsfor a variety of minimums and maxium values:
 
 
-```{r kimball.non-zero.density}
+
+```r
 library(dplyr)
 library(kimball)
 x <- seq(from=1, to=12, by=.25)
 density1 <- dkimball(x, 6, 2)
 density2 <- dkimball(x, 12, 2)
+#> Warning in hmin(S, L): The max is significantly HIGHER than the mean.
+#> Results might not be correct. Please consider another distribution.
 density3 <- dkimball(x, 12, 6)
 combined1 <- data.frame(x, density1, density2, density3)
 ```
 
 
-```{r kimball.non-density.plots, fig.align='center', echo=FALSE}
-library(ggplot2)
-p<-ggplot(combined1, aes(x=x)) +
-  geom_line(aes(y = density1, colour = "dkimball(x, 6, 2)"), size=1.5) +
-  geom_line(aes(y = density2, colour = "dkimball(x, 12, 2)"), size=1.5) +
-  geom_line(aes(y = density3, colour = "dkimball(x, 12, 6)"), size=1.5) +
-  scale_colour_manual("", 
-                      breaks = c("dkimball(x, 6, 2)", "dkimball(x, 12, 2)", "dkimball(x, 12, 6)"),
-                      values = c('#bdc9e1','#74a9cf','#0570b0')) +
-  labs(title="Probability densities for \n various Kimball parameters") +
-  labs(fill="") +
-  ylab("Probability") +
-   theme_bw() +
-  theme(legend.position = c(0.75, 0.5), axis.text.y=element_blank())
-```
+
 
 And here are the corresponding cumulative distributions. For these above example densities. I use the `pkimball()` funtion for these.
-```{r kimball.non-zero.cumulative.examples}
+
+```r
 cumulative1 <- pkimball(x, 6, 2)
 cumulative2 <- pkimball(x, 12, 2)
+#> Warning in hmin(S, L): The max is significantly HIGHER than the mean.
+#> Results might not be correct. Please consider another distribution.
 cumulative3 <- pkimball(x, 12, 6)
 combined2 <- data.frame(x, cumulative1, cumulative2, cumulative3)
 ```
 
 (Note: I need to fix the limits on pkimball and dkimball)
 
-```{r kimball.non-zero.cumulative.plots, echo=FALSE}
-library(ggplot2)
-q <-ggplot(combined2, aes(x=x)) +
-  geom_line(aes(y = cumulative1, colour = "pkimball(x, 6, 2)"), size=1.5) +
-  geom_line(aes(y = cumulative2, colour = "pkimball(x, 12, 2)"), size=1.5) +
-  geom_line(aes(y = cumulative3, colour = "pkimball(x, 12, 6)"), size=1.5) +
-  scale_colour_manual("", 
-                      breaks = c("pkimball(x, 6, 2)", "pkimball(x, 12, 2)", "pkimball(x, 12, 6)"),
-                      values = c('#bdc9e1','#74a9cf','#0570b0')) +
-  labs(title="Cumulative probabilties for \n various Kimball parameters") +
-  labs(fill="") +
-  ylab("Probability") +
-  theme_bw() +
-  theme(legend.position = c(0.75, 0.45), axis.text.y=element_blank())
-```
 
-```{r arrange.non-zero.kimball, fig.width=7, fig.height=4, echo=FALSE}
-grid.arrange(p, q, ncol = 2)
-```
+
+![](kimball_files/figure-html/arrange.non-zero.kimball-1.png)<!-- -->
 
 Removing the restruction of a zero minimum makes the kiimball distribution a natural fit for yet more creative applications.
 
@@ -283,8 +238,7 @@ Removing the restruction of a zero minimum makes the kiimball distribution a nat
 
 Another task wich which I am sometimes faced is to estimate the likely price bands for some product given just a few judgemental inputs. For example, a client may provide me with research (or an assumption) telling me the average price of a computer server is roughly \$2,000, the minimum price for a stripped down version is \$1,500 and the maximum price for a richly configered workplace server--one with lots of memory and processors--is $4,000. The client shares all this information with a desire to know the share servers sold in \$500 price increments. The `dkimball()` function solves this problem rather quickly. Here's the kimball density with precisely these parameters: 
 
-```{r kimball.density.servers}
-```
+
 
 Of course its entirely possible that a big server manufacturer in this product example only sells servers in excess of \$3,000 suggesting some other distribution. But without such disproving information, a single-moded distribution, covering only a positive range of \$-values, and that has a left-leaning skew (which is most definately the case since the mean is closer to the minimum than it is to the minimum), the kimball distribution provides a natural choice.  
 
@@ -323,10 +277,13 @@ The `html_vignette` template includes a basic CSS theme. To override this theme 
 
 The figure sizes have been customised so that you can easily put two images side-by-side. 
 
-```{r, fig.show='hold'}
+
+```r
 plot(1:10)
 plot(10:1)
 ```
+
+![](kimball_files/figure-html/unnamed-chunk-1-1.png)![](kimball_files/figure-html/unnamed-chunk-1-2.png)
 
 You can enable figure captions by `fig_caption: yes` in YAML:
 
@@ -340,9 +297,19 @@ Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr*
 
 You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
 
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
+
+                      mpg   cyl    disp    hp   drat      wt    qsec   vs   am   gear   carb
+------------------  -----  ----  ------  ----  -----  ------  ------  ---  ---  -----  -----
+Mazda RX4            21.0     6   160.0   110   3.90   2.620   16.46    0    1      4      4
+Mazda RX4 Wag        21.0     6   160.0   110   3.90   2.875   17.02    0    1      4      4
+Datsun 710           22.8     4   108.0    93   3.85   2.320   18.61    1    1      4      1
+Hornet 4 Drive       21.4     6   258.0   110   3.08   3.215   19.44    1    0      3      1
+Hornet Sportabout    18.7     8   360.0   175   3.15   3.440   17.02    0    0      3      2
+Valiant              18.1     6   225.0   105   2.76   3.460   20.22    1    0      3      1
+Duster 360           14.3     8   360.0   245   3.21   3.570   15.84    0    0      3      4
+Merc 240D            24.4     4   146.7    62   3.69   3.190   20.00    1    0      4      2
+Merc 230             22.8     4   140.8    95   3.92   3.150   22.90    1    0      4      2
+Merc 280             19.2     6   167.6   123   3.92   3.440   18.30    1    0      4      4
 
 Also a quote using `>`:
 

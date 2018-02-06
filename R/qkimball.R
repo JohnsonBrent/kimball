@@ -13,10 +13,10 @@
 
 
 qkimball <- function(p, S, L, min=0, precision=.0001) {
-  L <- L-min
-  S <- S-min
+  L <- L-min # L = mean
+  S <- S-min # S = mean
   x <- seq(0,S,S*precision)
-  h <- hmin(S=S, L=L)
+  h <- hmin(S, L)
   phi.h <- dnorm(-h,0,1)
   PHI.h <- pnorm(h,0,1)
   w <- h + phi.h/PHI.h

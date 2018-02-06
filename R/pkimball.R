@@ -14,7 +14,7 @@ pkimball <- function(x, S, L, min=0) {
   L <- L-min  # L = mean
   S <- S-min  # S = max
   x <- x-min
-  h <- hmin(S=S, L=L)
+  h <- hmin(S,L)
   phi.h <- dnorm(-h,0,1)
   PHI.h <- pnorm(h,0,1)
   w <- h + phi.h/PHI.h
