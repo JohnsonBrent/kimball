@@ -21,7 +21,7 @@ hmin <- function(S, L) {
       return(delta)
     }
 
-    result <- optimize(hmin, c(0, 10))
+    result <- optim(par=c(start), fn=hmin, method="BFGS") 
     h <- result[[1]]
     if (max.as.pct.avg > 4.88) {
       warning("The max is significantly HIGHER than the mean. Results might not be correct. Please consider another distribution.")
