@@ -24,3 +24,4 @@ qkimball <- function(p, S, L, min=0, precision=.0001) {
   q <- x[which.min(abs(Ft-p))] + min
   return(q)
 }
+

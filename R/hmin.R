@@ -9,26 +9,25 @@
 
 hmin <- function(S, L) {
   max.as.pct.avg <- S/L
-  hmin <- function(start=1) {
-      phi.h <- dnorm(-start,0,1)
-      PHI.h <- pnorm(start,0,1)
-      delta <- phi.h / PHI.h
-      num <- pnorm(-(max.as.pct.avg*(start+delta)-start),0,1)
-      den <- pnorm(start,0,1)
-      FX <-  num / den
-      target <- .0001
-      delta <- abs(FX - target)
-      return(delta)
-    }
+  opt <- function(par) {
+    phi.h <- dnorm(-par,0,1)
+    PHI.h <- pnorm(par,0,1)
+    delta <- phi.h / PHI.h
+    num <- pnorm(-(max.as.pct.avg*(par+delta)-par),0,1)
+    den <- pnorm(par,0,1)
+    FX <-  num / den
+    target <- .0001
+    delta <- abs(FX - target)
+  }
 
-    result <- optim(par=c(start), fn=hmin, method="BFGS") 
-    h <- result[[1]]
-    if (max.as.pct.avg > 4.88) {
-      warning("The max is significantly HIGHER than the mean. Results might not be correct. Please consider another distribution.")
-    }
-    if (max.as.pct.avg < 1.22) {
-      warning("The max is very close to the mean. Results might not be correct. Please consider another distribution.")
-    }
-    return(h)
+  result <- optim(par=3, opt, method="BFGS")
+  h <- result[[1]]
+  if (max.as.pct.avg > 4.88) {
+    warning("The max is significantly HIGHER than the mean. Results might not be correct. Please consider another distribution.")
+  }
+  if (max.as.pct.avg < 1.22) {
+    warning("The max is very close to the mean. Results might not be correct. Please consider another distribution.")
+  }
+  return(h)
 }
 

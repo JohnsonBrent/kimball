@@ -1,0 +1,70 @@
+---
+title: "IPRTemplate"
+author: "International Planning & Research"
+date: "February 9, 2018"
+output:
+  word_document:
+    fig_height: 4
+    fig_width: 5
+    reference_docx: IPR_styles_reference-01.docx #( For IPR_styles_reference-02.docx, set fig_height: 3, set fig_width: 4)
+    toc: yes
+    toc_depth: 2
+subtitle: Subtitle - IPRTemplate
+---
+
+```{r include=FALSE}
+
+## IPR colors for ggplot2
+
+#devtools::install_github('cttobin/ggthemr') 
+#install.packages(c("ggplot2", "knitr") 
+
+library(ggplot2);library(ggthemr);library(knitr)
+source("IPR_color_select.R")
+colors_IPR <- color_mono_10 # select your colors. (Choices: color_mono_4, color_mono_5, color_mono_7, color_mono_10)
+source("IPR_ggthemr.R")
+ggthemr(colortheme_IPR)
+
+```
+
+
+# 1. Overview
+
+IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template 
+
+# 2. Analysis
+## 2.1. Data Processing
+IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template 
+
+
+```{r Data Processing}
+data(iris)
+knitr::kable(head(iris))
+
+```
+
+
+## 2.2. Modeling
+IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template 
+
+```{r Modeling}
+model <- lm(Sepal.Length ~ Petal.Width, data = iris)
+summary(model)
+
+```
+
+## 2.3. Visualization
+
+```{r echo = FALSE}
+
+ggplot(iris, aes(x = Petal.Width, y = Sepal.Length, color = Species)) + 
+  geom_point() +
+  stat_smooth(method = "lm")
+
+```
+
+# 3. Conclusion
+IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template IPR Template 
+
+
+
