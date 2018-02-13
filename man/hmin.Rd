@@ -18,5 +18,5 @@ h
 Function to solve for "h" as per Kimball(1948) and Oates & Spencer(1962). Neccessary for all Kimball functions.
 }
 \examples{
-hmin(4, 8)
+hmin(8, 4)
 }

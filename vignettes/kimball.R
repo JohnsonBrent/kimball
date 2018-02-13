@@ -96,7 +96,7 @@ smartphone <- data.frame(year=c(2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 
 2016, 2017), shipments=c(122.36, 151.4, 173.5, 304.7, 494.6, 725.3, 1019.5, 1301.7, 1437.2, 1470.6, 1468.1))
 
 ## ----print.shipments, echo=FALSE-----------------------------------------
-knitr::kable(head(smartphone))
+knitr::kable(smartphone)
 
 ## ----replacement.estimate------------------------------------------------
 # create a function to lag variable x a total of n times and name it with a prefix--keeping 
@@ -110,10 +110,12 @@ f <- function(x, n, pad, prefix="lag") {
   return(y)
 }
 
-# apply above function
-lagged.shipments <- f(smartphone$shipments, 5, 0, "shipments")
+# apply above function and create SIX lagged shipment values (plus current period)
+lagged.shipments <- f(smartphone$shipments, 6, 0, "shipments")
 
 # define vector of replacement probabilities given avg life=2 and maxlife=6
+time <- seq(0, 6)
+kimball.dens <- dkimball(time,6,2)
 replacement.schedule <- kimball.dens / sum(kimball.dens)
 
 # compute estimateed replacement sales
@@ -140,7 +142,7 @@ pkimball(x, 1000, 300, 100)
 price.ranges <- seq(from=1500, to=4000, by=250)
 
 # compute the densities
-price.densities <- dkimball(price.ranges, 4000, 2220, 1500)
+price.densities <- dkimball(price.ranges, 4000, 2250, 1500)
 price.probabilities <- price.densities / sum(price.densities)
 
 ## ----kimball.density.servers.plot, echo=FALSE, fig.width=7---------------
@@ -149,10 +151,10 @@ df <- data.frame(price=price.ranges, probabilties=price.probabilities)
 
 ggplot(data=df, aes(x=price, y=probabilties)) +
   geom_bar(stat="identity", colour="black", fill="#E69F00") +
-  labs(title="Server prices") +
+  labs(title="Server price bands") +
   ylab("Probability") +
   xlab("Server price") +
-  annotate("label", x = 3500, y = .15, label = "dkimball(price.ranges, \n S=4000, L=2220, min=1200)") +  
+  annotate("label", x = 3500, y = .15, label = "dkimball(price.ranges, \n S=$4,000, L=$2,250, min=$1,500)") +  
   theme_bw() + 
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_x_continuous(labels = dollar, breaks = c(1500, 2000, 2500, 3000, 3500, 4000))

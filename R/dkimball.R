@@ -23,4 +23,3 @@ dkimball <- function(x, S, L, min=0) {
   return(Ft)
 }
 
-
