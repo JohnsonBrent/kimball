@@ -25,11 +25,10 @@ Like the un-truncated normal or Gaussian distribution, the kimball distribution 
 
 Following the naming convention in most other probability functions in R, the main functions available in the kimball package include the following:
 
+-   rkimball() generates random deviates.
 -   dkimball() returns the probability density.
 -   pkimball() returns the cumulative distribution.
 -   qkimball() returns the quantile (estimated by approximation and a user-specified level of precision).
-
-In this version of the package, I have not implemented a function for returning random deviates, e.g., rkimball().
 
 Installation
 ------------
@@ -48,7 +47,7 @@ Suppose for example, one has obtained estimates that a particular machine part o
 
 ``` r
 1 - pkimball(5,8,3)
-#> [1] 0.05111129
+#> [1] 0.0511109
 ```
 
 And a vector containing its probability of failure in years 0,1,2,3,4 and 5 is...
@@ -56,7 +55,7 @@ And a vector containing its probability of failure in years 0,1,2,3,4 and 5 is..
 ``` r
 time <-c(0,1,2,3,4,5)
 dkimball(time,8,3)
-#> [1] 0.02734840 0.10334433 0.22688392 0.28938969 0.21444933 0.09232698
+#> [1] 0.02734781 0.10334363 0.22688442 0.28939133 0.21445008 0.09232658
 ```
 
 See the [Kimball vignette](/vignettes/kimball.Rmd) for more examples.

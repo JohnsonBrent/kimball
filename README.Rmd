@@ -37,11 +37,10 @@ Like the un-truncated normal or Gaussian distribution, the kimball distribution 
 
 Following the naming convention in most other probability functions in R, the main functions available in the kimball package include the following:
 
+-   rkimball() generates random deviates.
 -   dkimball() returns the probability density.
 -   pkimball() returns the cumulative distribution.
 -   qkimball() returns the quantile (estimated by approximation and a user-specified level of precision).
-
-In this version of the package, I have not implemented a function for returning random deviates, e.g., rkimball().
 
 ## Installation
 

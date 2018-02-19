@@ -9,6 +9,10 @@ output:
     reference_docx: IPR_styles_reference-01.docx
     toc: yes
     toc_depth: 2
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '2'
 ---
 
 ```{r setup, include = FALSE}
@@ -102,7 +106,7 @@ Kimball (1947), followed by Oates and Spencer (1962), developed this distributio
 The benefit of a distribution with interpretable parameters is that it lends itself to estimation via easily elicited inputs. One can examine easily collected data or judgments and use these to estimate the Kimball's parameters.  For example, per the simple, publicly available survey data below, a mobile phone has a median expected life of between 1.5 to 2 years (in both the US and in all countries). Looking a little more closely and mentally projecting the curve below further to the right (since the last couple of years are grouped in the chart), it appears that perhaps the expected maximum life of a mobile phone is around 6 years.
 
 <center>
-[![Survey data on expected mobile phone life.](D:/Dropbox/kimball/vignettes/mobile phone replacement curve.jpg){ width=70% }](https://www.statista.com/statistics/241036/ownership-time-length-of-current-mobile-phone-until-replacement/)
+[![Survey data on fish mobile phone life.](D:/Dropbox/kimball/vignettes/mobile phone replacement curve.jpg){ width=70% }](https://www.statista.com/statistics/241036/ownership-time-length-of-current-mobile-phone-until-replacement/)
 </center>
 
 It's easy to fit a corresponding truncated normal probability density to these data above using the `dkimball` function:
